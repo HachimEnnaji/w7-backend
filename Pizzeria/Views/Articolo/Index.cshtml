@@ -34,6 +34,7 @@
                             <span class="top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 @item.Prezzo €
                             </span>
+                            <a type="button" id="@item.IdArticolo"  aspvalue="Aggiungi" class="btn btn-danger btn-add"> lol</a> |
                             </div>
                     </div>
                 </div>
@@ -50,3 +51,32 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
+
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".btn-add").click(function () {
+                var productId = $(this).attr("id");
+                console.log(productId);
+                inviaCarrelloAlServer(productId);
+            });
+
+            function inviaCarrelloAlServer(id) {
+              // Ottieni i dati del carrello dal modulo Carrello
+                $.ajax({
+                    url: `/Articolo/AggiungiAlCarrello/${id}`, // URL dell'azione del controller
+                    type: 'GET', // Metodo HTTP da utilizzare
+                    contentType: 'application/json', // Tipo di dati
+                    success: function (response) {
+                        console.log('Dati del carrello inviati con successo al server');
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Errore durante l'invio dei dati del carrello al server: ", errorThrown);
+                        }
+                });
+            }
+
+        });
+    </script>
+    

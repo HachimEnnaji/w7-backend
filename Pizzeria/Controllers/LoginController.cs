@@ -32,8 +32,8 @@ namespace Pizzeria.Controllers
             {
                 TempData["error"] = "Non esiste questo account";
                 return View();
-
             }
+
             if (user.Username == "admin" && user.Password == "admin")
             {
                 var claims = new List<Claim>
@@ -50,13 +50,32 @@ namespace Pizzeria.Controllers
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity),
                         authProperties);
-                TempData["success"] = "Login effettuato";
+                TempData["success"] = "Sezione Admin";
+                return RedirectToAction("Index", "Home");
+            }
+            else if (user != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.Username)
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var authProperties = new AuthenticationProperties();
+
+                await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity),
+                        authProperties);
+                TempData["message"] = "Login effettuato";
                 return RedirectToAction("Index", "Home");
             }
             else
             {
                 TempData["error"] = "Password sbagliata";
             }
+
             return View();
         }
 
@@ -76,6 +95,13 @@ namespace Pizzeria.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Register([Bind("Username, Password")] Utente utente)
         {
+
+            var user = _db.Utenti.SingleOrDefault(x => x.Username == utente.Username);
+            if (user != null)
+            {
+                TempData["error"] = "Username già esistente";
+                return View();
+            }
             ModelState.Remove("Ordini");
             if (ModelState.IsValid)
                 try
@@ -92,6 +118,8 @@ namespace Pizzeria.Controllers
 
                 catch (Exception ex)
                 {
+                    TempData["error"] = "Errore nella creazione dell'account, riprovare";
+
                     System.Diagnostics.Debug.WriteLine("ERROREEE" + ex.Message);
                 }
             return View(utente);

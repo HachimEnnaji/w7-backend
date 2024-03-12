@@ -19,6 +19,7 @@ namespace Pizzeria.Models
 
         public string Note { get; set; } = "";
 
+        [NotMapped]
         public double? PrezzoTotale { get; set; }
 
         public virtual Utente Utente { get; set; }

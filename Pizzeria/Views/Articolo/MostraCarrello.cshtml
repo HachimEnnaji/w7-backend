@@ -1,0 +1,10 @@
+﻿@model List<Carrello>
+
+<h1>Il tuo carrello</h1>
+
+@foreach (var item in Model)
+{
+    <p>@item.Articolo.Nome</p>
+    <p>@item.Quantita</p>
+}
+
