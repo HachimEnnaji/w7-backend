@@ -6,5 +6,12 @@
 {
     <p>@item.Articolo.Nome</p>
     <p>@item.Quantita</p>
+<p>@item.Articolo.Prezzo</p>
+    <a type="button" asp-action="RimuoviDalCarrello" asp-route-id="@item.Articolo.IdArticolo">Rimuovi</a>
 }
+<hr />
+<p>Totale: @Model.Sum(x => x.Articolo.Prezzo * x.Quantita)</p>
+
+<a type="button" asp-action="Create" asp-controller="Ordine">Acquista</a>
+
 

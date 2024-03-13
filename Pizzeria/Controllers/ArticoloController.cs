@@ -171,17 +171,16 @@ namespace Pizzeria.Controllers
                     {
                         if (item.Articolo.IdArticolo == id)
                         {
+
+                            isExist = true;
                             item.Quantita += 1;
                             HttpContext.Session.SetString("carrelloList", JsonConvert.SerializeObject(cart));
-                            isExist = true;
-
                         }
 
                     }
                 }
                 if (isExist == false)
                 {
-
                     Carrello carrello = new Carrello();
                     carrello.Articolo = articolo;
                     carrello.Quantita = 1;
@@ -207,6 +206,27 @@ namespace Pizzeria.Controllers
                 carrelloList = JsonConvert.DeserializeObject<List<Carrello>>(carrelloSession);
             }
             return View(carrelloList);
+        }
+
+        public IActionResult RimuoviDalCarrello(int id)
+        {
+            var carrelloSession = HttpContext.Session.GetString("carrelloList");
+            if (carrelloSession != null)
+            {
+                List<Carrello> cart = JsonConvert.DeserializeObject<List<Carrello>>(carrelloSession);
+                foreach (var item in cart)
+                {
+                    if (item.Articolo.IdArticolo == id)
+                    {
+                        cart.Remove(item);
+                        HttpContext.Session.SetString("carrelloList", JsonConvert.SerializeObject(cart));
+                        TempData["message"] = "Articolo rimosso dal carrello";
+                        return RedirectToAction(nameof(MostraCarrello));
+                    }
+                }
+            }
+            TempData["error"] = "Articolo non trovato";
+            return RedirectToAction(nameof(MostraCarrello));
         }
     }
 }

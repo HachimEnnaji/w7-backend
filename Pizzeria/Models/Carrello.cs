@@ -1,5 +1,8 @@
-﻿namespace Pizzeria.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Pizzeria.Models
 {
+    [NotMapped]
     public class Carrello
     {
         public Articolo Articolo { get; set; }

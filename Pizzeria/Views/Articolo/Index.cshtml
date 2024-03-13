@@ -34,7 +34,7 @@
                             <span class="top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 @item.Prezzo €
                             </span>
-                            <a type="button" id="@item.IdArticolo"  aspvalue="Aggiungi" class="btn btn-danger btn-add"> lol</a> |
+                            <a type="button" id="@item.IdArticolo" aspvalue="@item.Nome" class="btn btn-danger btn-add "> Aggiungi</a> 
                             </div>
                     </div>
                 </div>
@@ -51,16 +51,22 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
+<div id="Messaggio" class="mt-5 position-absolute"> </div>
 
-    
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $(".btn-add").click(function () {
-                var productId = $(this).attr("id");
-                console.log(productId);
-                inviaCarrelloAlServer(productId);
-            });
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".btn-add").click(function () {
+            var productId = $(this).attr("id");
+            var nome = $(this).attr("aspvalue");
+            inviaCarrelloAlServer(productId);
+            $("#Messaggio").html(`<span class="alert alert-success " role="alert">Hai aggiunto ${nome} al carrello</span>`);
+            setTimeout(function () {
+                $("#Messaggio").html("");
+            }, 2000);
+        });
 
             function inviaCarrelloAlServer(id) {
               // Ottieni i dati del carrello dal modulo Carrello
