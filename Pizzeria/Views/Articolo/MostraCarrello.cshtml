@@ -2,16 +2,27 @@
 
 <h1>Il tuo carrello</h1>
 
-@foreach (var item in Model)
-{
-    <p>@item.Articolo.Nome</p>
-    <p>@item.Quantita</p>
-<p>@item.Articolo.Prezzo</p>
-    <a type="button" asp-action="RimuoviDalCarrello" asp-route-id="@item.Articolo.IdArticolo">Rimuovi</a>
-}
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card"  >
+                <img src="@item.Articolo.Immagine" height="100" width="50" class="card-img-top " alt="@item.Articolo.Nome">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Articolo.Nome</h5>
+                    <div class="d-flex justify-content-between">
+                    <p class="card-text">Quantità: @item.Quantita</p>
+                    <p class="badge bg-success "> @item.Articolo.Prezzo &#8364;</p>
+</div>
+                    <a type="button " asp-action="RimuoviDalCarrello" asp-route-id="@item.Articolo.IdArticolo" class="btn btn-danger">Rimuovi</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
 <hr />
-<p>Totale: @Model.Sum(x => x.Articolo.Prezzo * x.Quantita)</p>
+<p>Totale: @Model.Sum(x => x.Articolo.Prezzo * x.Quantita) &euro;</p>
 
-<a type="button" asp-action="Create" asp-controller="Ordine">Acquista</a>
-
-
+<a type="button" asp-action="Create" asp-controller="Ordine" class="btn btn-outline-success">Acquista</a>

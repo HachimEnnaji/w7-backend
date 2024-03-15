@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -49,7 +50,21 @@ namespace Pizzeria.Controllers
         // GET: Ordines/Create
         public IActionResult Create()
         {
+            var carrelloSession = HttpContext.Session.GetString("carrelloList");
 
+            if (string.IsNullOrEmpty(carrelloSession))
+            {
+                TempData["error"] = "Carrello vuoto";
+                return RedirectToAction("MostraCarrello", "Articolo");
+            }
+            if (User.Identity.IsAuthenticated)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Login", "Login");
+            }
             return View();
         }
 
@@ -58,31 +73,30 @@ namespace Pizzeria.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdOrdine,IdUtente,Indirizzo,IsConsegnato,Note")] Ordine ordine)
+        public async Task<IActionResult> Create([Bind("IdOrdine,IdUtente,Indirizzo,IsConsegnato,Note,DataOrdine,PrezzoTotale")] Ordine ordine)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            System.Diagnostics.Debug.WriteLine(" SONO USER ID \t" + userId);
-            System.Diagnostics.Debug.WriteLine(" SONO USER ID \t" + Convert.ToInt32(userId));
+
 
             if (userId == null)
             {
                 return RedirectToAction("Login", "Login");
             }
             ordine.IdUtente = Convert.ToInt32(userId);
+            ordine.DataOrdine = DateTime.Now;
 
             _context.Ordini.Add(ordine);
             await _context.SaveChangesAsync();
 
 
             var carrelloSession = HttpContext.Session.GetString("carrelloList");
-            System.Diagnostics.Debug.WriteLine(" SONO carrello list \t" + carrelloSession);
 
             if (!string.IsNullOrEmpty(carrelloSession))
             {
                 var carrello = JsonConvert.DeserializeObject<List<Carrello>>(carrelloSession);
+                double prezzoTotale = 0;
                 foreach (var item in carrello)
                 {
-                    System.Diagnostics.Debug.WriteLine(" SONO carrello list riga 84 \t" + carrelloSession);
 
                     var dettagliOrdine = new DettagliOrdine
                     {
@@ -92,9 +106,13 @@ namespace Pizzeria.Controllers
                         PrezzoUnitario = item.Articolo.Prezzo
                     };
                     _context.DettagliOrdini.Add(dettagliOrdine);
+                    prezzoTotale += item.Quantita * item.Articolo.Prezzo;
+
+
                 }
+                ordine.PrezzoTotale = prezzoTotale;
                 await _context.SaveChangesAsync();
-                HttpContext.Session.Remove("CarrelloList");
+                HttpContext.Session.Remove("carrelloList");
                 TempData["success"] = "Ordine effettuato con successo";
             }
             return RedirectToAction("Index", "Home");
@@ -191,6 +209,34 @@ namespace Pizzeria.Controllers
         private bool OrdineExists(int id)
         {
             return _context.Ordini.Any(e => e.IdOrdine == id);
+        }
+
+        public async Task<IActionResult> InConsegna()
+        {
+            var inConsegna = await _context.Ordini.Where(o => o.IsConsegnato == false).ToListAsync();
+            return View(inConsegna);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Consegnato(int id)
+        {
+            try
+            {
+                var ordine = await _context.Ordini.FindAsync(id);
+
+                if (ordine == null)
+                {
+                    return StatusCode(404, "Article not found");
+                }
+                ordine.IsConsegnato = true;
+                _context.Update(ordine);
+                await _context.SaveChangesAsync();
+                return StatusCode(200, "Article updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }

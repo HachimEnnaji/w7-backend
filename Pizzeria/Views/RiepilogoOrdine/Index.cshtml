@@ -1,0 +1,126 @@
+﻿@model List<Pizzeria.Models.Ordine>
+
+@{
+    ViewData["Title"] = "Index";
+    var count = 1;
+}
+
+<h1>Storico Ordini</h1>
+
+<div>
+   
+    <hr />
+   
+
+    
+    @foreach (var el in Model)
+    {
+        <div class="bg-danger my-4">
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Ordine @count</h3>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"> Data Ordine: <span class="h6"> @el.DataOrdine</span></li>
+
+                    <li class="list-group-item">Indirizzo: <span class="h6">@el.Indirizzo </span></li>
+                    <li class="list-group-item">Spedizione:
+                        @{if (el.IsConsegnato)
+                        {
+                            <span class="badge bg-success">Consegnato</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">In consegna</span>
+                        }
+                        }
+                    </li>
+
+                    <li class="list-group-item">Note: <span class="h6">@el.Note</span></li>
+                    <li class="list-group-item">Prezzo totale: <span class="h6">@el.PrezzoTotale &#8364;</span> </li>
+                </ul>
+            </div>
+            <h4 class="ms-3  me-auto">Dettagli</h4>
+            <ul class="list-group list-group-striped">
+            @foreach (var e in el.DettagliOrdini)
+            {
+                
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-3 me-auto">
+                            <div class="fw-bold">@e.Articoli.Nome x <span class="h6">@e.Quantita</span></div>
+                        </div>
+                        <span class="badge bg-dark text-white rounded-pill">@e.PrezzoUnitario &#8364;</span>
+                       
+                    </li>
+                    
+            }
+                </ul>
+        </div>
+        count++;
+        <hr />
+    }
+</div>
+@* <div>
+        <dl class="row">
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => el.Indirizzo)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => el.Indirizzo)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => el.IsConsegnato)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => el.IsConsegnato)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => el.Note)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => el.Note)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => el.DataOrdine)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => el.DataOrdine)
+            </dd>
+        </dl>
+        @foreach (var element in el.DettagliOrdini)
+        {
+            <div>
+                <h4>Dettaglio Ordine</h4>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => element.Articoli)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => element.Articoli.Nome)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => element.Quantita)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => element.Quantita)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => element.PrezzoUnitario)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => element.PrezzoUnitario)
+                    </dd>
+                </dl>
+            </div>
+        }
+
+ </div>
+    }
+
+ <hr/>
+
+</div>
+ *@

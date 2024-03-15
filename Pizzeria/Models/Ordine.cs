@@ -15,12 +15,15 @@ namespace Pizzeria.Models
         public string Indirizzo { get; set; }
 
         [Required]
+        [Display(Name = "Consegnato")]
         public bool IsConsegnato { get; set; } = false;
 
         public string Note { get; set; } = "";
 
-        [NotMapped]
+
         public double? PrezzoTotale { get; set; }
+
+        public DateTime? DataOrdine { get; set; }
 
         public virtual Utente Utente { get; set; }
         public virtual ICollection<DettagliOrdine> DettagliOrdini { get; set; }

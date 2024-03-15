@@ -19,7 +19,7 @@
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsConsegnato" /> @Html.DisplayNameFor(model => model.IsConsegnato)
+                    <input hidden asp-for="IsConsegnato" /> 
                 </label>
             </div>
             <div class="form-group">
@@ -28,13 +28,13 @@
                 <span asp-validation-for="Note" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary my-3" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <button type="button" asp-action="Index" class="btn btn-secondary ">Torna Indietro</button>
 </div>
 

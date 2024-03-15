@@ -86,6 +86,7 @@ namespace Pizzeria.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Clear();
             TempData["message"] = "Logout effettuato";
             return RedirectToAction("Index", "Home");
 

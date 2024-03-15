@@ -7,7 +7,12 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @{
+        if (User.IsInRole("Admin"))
+        {
+            <a type="button" class="btn btn-success" asp-action="Create"> <i class="fa-solid fa-plus"> </i> Aggiungi Prodotto</a>
+        }
+    }
 </p>
 <div id="carouselExampleCaptions" class="carousel slide">
     <div class="carousel-indicators">
@@ -25,17 +30,32 @@
             index = 0;
             foreach (var item in Model)
             {
-                <div class="carousel-item @(index == 0 ? "active" : "") ">
-                    <img src="@item.Immagine" alt="@item.Nome" class="object-fit-cover">
+                <div class="carousel-item  @(index == 0 ? "active " : "") " style="max-height: 450px">
+                    <img src="@item.Immagine" alt="@item.Nome" style="object-fit: cover; object-position:center">
                     <div class="carousel-caption d-none d-md-block">
-                        <div style="backdrop-filter:contrast(0.5)">
-                            <h5 class="text-black">@item.Nome</h5>
-                            <p class="text-black">@item.Ingredienti</p>
-                            <span class="top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <div style="backdrop-filter:contrast(0.2)">
+
+                            <h5 class="text-black">@item.Nome</h5>  <span class=" badge rounded-pill bg-dark py-1">
                                 @item.Prezzo €
                             </span>
-                            <a type="button" id="@item.IdArticolo" aspvalue="@item.Nome" class="btn btn-danger btn-add "> Aggiungi</a> 
+
+                            <p class="text-black fw-bold mb-0">@item.Ingredienti</p>
+
+                            <div class="d-flex justify-content-center">
+                                <a type="button" id="@item.IdArticolo" aspvalue="@item.Nome" class="btn btn-secondary btn-add mb-2 "> Aggiungi</a>
+                                <a asp-action="Details" asp-route-id="@item.IdArticolo" class="btn btn-info mb-2 ms-2">Dettagli</a>
+
                             </div>
+                            @{
+                                if (User.IsInRole("Admin"))
+                                {
+                                    <div class="d-flex justify-content-center">
+                                        <a asp-action="Edit" asp-route-id="@item.IdArticolo" class="btn btn-primary mb-1">Edit</a>
+                                        <a asp-action="Delete" asp-route-id="@item.IdArticolo" class="btn btn-danger mb-1 ms-2">Delete</a>
+                                    </div>
+                                }
+                            }
+                        </div>
                     </div>
                 </div>
                 index++;
@@ -68,21 +88,20 @@
             }, 2000);
         });
 
-            function inviaCarrelloAlServer(id) {
-              // Ottieni i dati del carrello dal modulo Carrello
-                $.ajax({
-                    url: `/Articolo/AggiungiAlCarrello/${id}`, // URL dell'azione del controller
-                    type: 'GET', // Metodo HTTP da utilizzare
-                    contentType: 'application/json', // Tipo di dati
-                    success: function (response) {
-                        console.log('Dati del carrello inviati con successo al server');
-                    },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.error("Errore durante l'invio dei dati del carrello al server: ", errorThrown);
-                        }
-                });
-            }
+        function inviaCarrelloAlServer(id) {
+            // Ottieni i dati del carrello dal modulo Carrello
+            $.ajax({
+                url: `/Articolo/AggiungiAlCarrello/${id}`, // URL dell'azione del controller
+                type: 'GET', // Metodo HTTP da utilizzare
+                contentType: 'application/json', // Tipo di dati
+                success: function (response) {
+                    console.log('Dati del carrello inviati con successo al server');
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error("Errore durante l'invio dei dati del carrello al server: ", errorThrown);
+                }
+            });
+        }
 
-        });
-    </script>
-    
+    });
+</script>
