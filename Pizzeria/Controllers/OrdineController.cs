@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -65,7 +64,6 @@ namespace Pizzeria.Controllers
             {
                 return RedirectToAction("Login", "Login");
             }
-            return View();
         }
 
         // POST: Ordines/Create
@@ -216,7 +214,6 @@ namespace Pizzeria.Controllers
             var inConsegna = await _context.Ordini.Where(o => o.IsConsegnato == false).ToListAsync();
             return View(inConsegna);
         }
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Consegnato(int id)
         {

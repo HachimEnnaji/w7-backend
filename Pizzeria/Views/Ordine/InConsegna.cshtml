@@ -6,7 +6,7 @@
 
 <h1>Ordini Da Confermare</h1>
 
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>
@@ -49,7 +49,7 @@
                     @Html.DisplayFor(modelItem => item.Utente.Username)
                 </td>
                 <td>
-                    <input id="@item.IdOrdine" type="checkbox" value="@item.IsConsegnato" />
+                    <input class="form-check-input" id="@item.IdOrdine" type="checkbox" value="@item.IsConsegnato" />
                 </td>
             </tr>
         }
