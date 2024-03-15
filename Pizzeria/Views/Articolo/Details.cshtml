@@ -23,7 +23,7 @@
                     @{
                         if(User.IsInRole("Admin"))
                         {
-                                    <input type="submit" value="Delete" class="btn btn-danger" /> 
+                                    <a asp-action="Delete"  value="Delete" class="btn btn-danger" /> 
                             <a asp-action="Edit" asp-route-id="@Model?.IdArticolo" class="btn btn-primary">Edit</a>
                         }
 
